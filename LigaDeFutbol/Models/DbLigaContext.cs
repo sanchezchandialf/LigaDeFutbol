@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LigaDeFutbol.Models;
 
-public partial class AsociacionFutbolisticaGrupo28Context : DbContext
+public partial class DbLigaContext : DbContext
 {
-    public AsociacionFutbolisticaGrupo28Context()
+    public DbLigaContext()
     {
     }
 
-    public AsociacionFutbolisticaGrupo28Context(DbContextOptions<AsociacionFutbolisticaGrupo28Context> options)
+    public DbLigaContext(DbContextOptions<DbLigaContext> options)
         : base(options)
     {
     }
@@ -32,8 +32,10 @@ public partial class AsociacionFutbolisticaGrupo28Context : DbContext
     public virtual DbSet<Torneo> Torneos { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=SANCHEZCHANDIA\\SQL1; Initial Catalog=AsociacionFutbolisticaGrupo28; Integrated Security=True; Trusted_Connection=True; TrustServerCertificate=True");
+    {
+        
+    }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
