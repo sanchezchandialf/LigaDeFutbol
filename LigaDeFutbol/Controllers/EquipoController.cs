@@ -7,6 +7,7 @@ using LigaDeFutbol.Models;
 using LigaDeFutbol.DTos;
 using Microsoft.EntityFrameworkCore;
 using LigaDeFutbol.Dtos;
+using System.Runtime.InteropServices;
 
 namespace LigaDeFutbol.Controllers
 {
@@ -22,7 +23,7 @@ namespace LigaDeFutbol.Controllers
         }
 
         // Endpoint para registrar un equipo (ya definido antes)
-        [HttpPost("registrar")]
+        [HttpPost()]
         public async Task<IActionResult> RegistrarEquipo([FromBody] RegistrarEquipoDTO request)
         {
             if (request == null)
@@ -33,10 +34,23 @@ namespace LigaDeFutbol.Controllers
             if (directorTecnico == null || !directorTecnico.EsDirectorTecnico)
                 return BadRequest("El Director Técnico especificado no es válido.");
 
+            var equipotecnico=await _context.Equipos.FirstOrDefaultAsync(e=>e.Id==request.IdDirectorTecnico);
+
+            if (equipotecnico != null)
+                return BadRequest("El Director Técnico especificado ya tiene un equipo asignado.");
+
             var representanteEquipo = await _context.Personas.FindAsync(request.IdRepresentanteEquipo);
             if (representanteEquipo == null || !representanteEquipo.EsRepresentanteEquipo)
                 return BadRequest("El Representante del Equipo especificado no es válido.");
 
+            var torneo=  await _context.Torneos.FirstOrDefaultAsync(t=>t.Id==request.IdTorneo);
+            if (torneo == null)
+                return BadRequest("El Torneo especificado no es valido.");
+
+            DateOnly ahora= DateOnly.FromDateTime(DateTime.Now);
+            if (ahora<torneo.FechaInicioInscripcion|| ahora>torneo.FechaFinalizacionInscripcion)  
+                return BadRequest("El Torneo especificado no es valido.");
+            
             // Crear el equipo
             var equipo = new Equipo
             {
@@ -59,7 +73,7 @@ namespace LigaDeFutbol.Controllers
         }
 
         // Endpoint para asignar jugadores a un equipo
-        [HttpPost("asignar-jugadores")]
+        [HttpPost("{equipoId}/asignar-jugadores")]
         public async Task<IActionResult> AsignarJugadores([FromBody] AsignarJugadoresDTO request)
         {
             // Validar equipo
@@ -70,7 +84,7 @@ namespace LigaDeFutbol.Controllers
             if (equipo == null)
                 return NotFound("Equipo no encontrado.");
 
-            // Validar jugadores
+            // Validacion de  jugadores
             var jugadores = await _context.Personas
                 .Where(p => request.IdJugadores.Contains(p.Id) && p.EsJugador)
                 .ToListAsync();

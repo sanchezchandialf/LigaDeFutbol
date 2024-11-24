@@ -10,7 +10,12 @@
         public string Calle { get; set; } = null!;
         public string Numero { get; set; } = null!;
         public string Ciudad { get; set; } = null!;
-        public string NTelefono1 { get; set; } = null!;
+        public string NTelefono1 { get; set; }= null!;
         public string? NTelefono2 { get; set; }
+
+        public bool EsJugador { get; set; }
+        public bool EsRepresentanteEquipo { get; set; } 
+        public bool EsDirectorTecnico { get; set; }
+       
     }
 }

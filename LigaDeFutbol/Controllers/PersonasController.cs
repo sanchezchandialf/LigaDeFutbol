@@ -8,17 +8,17 @@ namespace LigaDeFutbol.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class JugadoresController : ControllerBase
+    public class PersonasController : ControllerBase
     {
         private readonly DbLigaContext _context;
 
-        public JugadoresController(DbLigaContext context)
+        public PersonasController(DbLigaContext context)
         {
             _context = context;
         }
 
         // Endpoint para registrar un jugador
-        [HttpPost("registrar")]
+        [HttpPost()]
         public async Task<IActionResult> RegistrarJugador([FromBody] RegistroJugadorDTO request)
         {
             if (request == null)
@@ -37,13 +37,22 @@ namespace LigaDeFutbol.Controllers
                 Ciudad = request.Ciudad,
                 NTelefono1 = request.NTelefono1,
                 NTelefono2 = request.NTelefono2,
-                EsJugador = true
+              
+               
+
             };
 
             // Validar y asignar categoría según la edad mateo hdp
-            int edad = CalcularEdad(request.FechaNacimiento);
-            persona.NSocio = ObtenerCategoriaPorEdad(edad);
 
+            /*int edad = CalcularEdad(request.FechaNacimiento);
+            persona.NSocio = ObtenerCategoriaPorEdad(edad);
+            */
+            if (request.EsJugador==true) { persona.EsJugador = request.EsJugador; persona.NSocio=Guid.NewGuid().ToString(); }
+            if (request.EsDirectorTecnico==true) { persona.EsDirectorTecnico = request.EsDirectorTecnico; }
+            if (request.EsRepresentanteEquipo==true) { persona.EsRepresentanteEquipo = request.EsRepresentanteEquipo; }
+
+
+            
 
             await _context.Personas.AddAsync(persona);
             await _context.SaveChangesAsync();
@@ -51,10 +60,10 @@ namespace LigaDeFutbol.Controllers
             return Ok(new
             {
                 Mensaje = "Jugador registrado exitosamente",
-                Categoria = persona.NSocio
+                //Categoria = persona.NSocio
             });
         }
-
+        /*
         private int CalcularEdad(DateTime fechaNacimiento)
         {
             var hoy = DateTime.Today;
@@ -68,13 +77,14 @@ namespace LigaDeFutbol.Controllers
 
         private string ObtenerCategoriaPorEdad(int edad)
         {
-            if (edad >=41 && edad <= 45)
+            if (edad >= 41 && edad <= 45)
                 return "Maxi";
-            if (edad >=46 && edad <= 50)
+            if (edad >= 46 && edad <= 50)
                 return "Super";
             if (edad >= 51 && edad <= 55)
                 return "Master";
             return "Senior";
         }
+        */
     }
 }
