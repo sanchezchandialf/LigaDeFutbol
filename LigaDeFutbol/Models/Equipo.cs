@@ -13,13 +13,17 @@ public partial class Equipo
 
     public int IdRepresentanteEquipo { get; set; }
 
-    public virtual ICollection<EquipoFecha> EquipoFechaIdEquipo1Navigations { get; set; } = new List<EquipoFecha>();
+    public int IdTorneo { get; set; }
 
-    public virtual ICollection<EquipoFecha> EquipoFechaIdEquipo2Navigations { get; set; } = new List<EquipoFecha>();
+    public virtual ICollection<Cruce> CruceIdEquipoANavigations { get; set; } = new List<Cruce>();
+
+    public virtual ICollection<Cruce> CruceIdEquipoBNavigations { get; set; } = new List<Cruce>();
 
     public virtual Persona IdDirectorTecnicoNavigation { get; set; } = null!;
 
     public virtual Persona IdRepresentanteEquipoNavigation { get; set; } = null!;
+
+    public virtual Torneo IdTorneoNavigation { get; set; } = null!;
 
     public virtual ICollection<JugadorEquipo> JugadorEquipos { get; set; } = new List<JugadorEquipo>();
 }

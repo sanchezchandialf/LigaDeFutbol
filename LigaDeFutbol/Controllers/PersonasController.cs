@@ -3,16 +3,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using LigaDeFutbol.Models;
-using LigaDeFutbol.DTos; 
+using LigaDeFutbol.DTos;
+using Microsoft.AspNetCore.Authorization;
 namespace LigaDeFutbol.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/[controller]")]
     public class PersonasController : ControllerBase
     {
-        private readonly DbLigaContext _context;
+        private readonly ContextDb _context;
 
-        public PersonasController(DbLigaContext context)
+        public PersonasController(ContextDb context)
         {
             _context = context;
         }
@@ -36,7 +38,8 @@ namespace LigaDeFutbol.Controllers
                 Numero = request.Numero,
                 Ciudad = request.Ciudad,
                 NTelefono1 = request.NTelefono1,
-                NTelefono2 = request.NTelefono2,
+
+       
               
                
 

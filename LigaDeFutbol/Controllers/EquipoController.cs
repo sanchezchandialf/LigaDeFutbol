@@ -8,16 +8,18 @@ using LigaDeFutbol.DTos;
 using Microsoft.EntityFrameworkCore;
 using LigaDeFutbol.Dtos;
 using System.Runtime.InteropServices;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LigaDeFutbol.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/[controller]")]
     public class EquipoController : ControllerBase
     {
-        private readonly DbLigaContext _context;
+        private readonly ContextDb _context;
 
-        public EquipoController(DbLigaContext context)
+        public EquipoController(ContextDb context)
         {
             _context = context;
         }
@@ -72,17 +74,22 @@ namespace LigaDeFutbol.Controllers
             });
         }
 
+
         // Endpoint para asignar jugadores a un equipo
         [HttpPost("{equipoId}/asignar-jugadores")]
-        public async Task<IActionResult> AsignarJugadores([FromBody] AsignarJugadoresDTO request)
+        public async Task<IActionResult> AsignarJugadores(int equipoId,[FromBody] AsignarJugadoresDTO request)
         {
             // Validar equipo
             var equipo = await _context.Equipos
-                .Include(e => e.JugadorEquipos)
-                .FirstOrDefaultAsync(e => e.Id == request.IdEquipo);
+                .FirstOrDefaultAsync(e => e.Id == equipoId);
 
             if (equipo == null)
                 return NotFound("Equipo no encontrado.");
+            
+            // Validacion inscripcion
+
+
+            //var otrosEquipos= await _context.Equipos.Where(e=>e.IdTorneo==equipo.IdTorneo).ToListAsync();
 
             // Validacion de  jugadores
             var jugadores = await _context.Personas
@@ -128,8 +135,6 @@ namespace LigaDeFutbol.Controllers
         public async Task<IActionResult> ListarJugadoresPorEquipo(int equipoId)
         {
             var equipo = await _context.Equipos
-                .Include(e => e.JugadorEquipos)
-                .ThenInclude(je => je.IdJugadorNavigation)
                 .FirstOrDefaultAsync(e => e.Id == equipoId);
 
             if (equipo == null)

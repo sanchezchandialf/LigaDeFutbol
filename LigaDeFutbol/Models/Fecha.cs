@@ -7,11 +7,9 @@ public partial class Fecha
 {
     public int Id { get; set; }
 
-    public int Rueda { get; set; }
+    public int IdRueda { get; set; }
 
-    public int IdTorneo { get; set; }
+    public virtual ICollection<Encuentro> Encuentros { get; set; } = new List<Encuentro>();
 
-    public virtual ICollection<EquipoFecha> EquipoFechas { get; set; } = new List<EquipoFecha>();
-
-    public virtual Torneo IdTorneoNavigation { get; set; } = null!;
+    public virtual Ruedum IdRuedaNavigation { get; set; } = null!;
 }

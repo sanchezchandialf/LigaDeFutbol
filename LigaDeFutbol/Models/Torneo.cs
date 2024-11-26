@@ -23,11 +23,13 @@ public partial class Torneo
 
     public int IdDivision { get; set; }
 
-    public virtual ICollection<Fecha> Fechas { get; set; } = new List<Fecha>();
+    public virtual ICollection<Equipo> Equipos { get; set; } = new List<Equipo>();
 
     public virtual Categoria IdCategoriaNavigation { get; set; } = null!;
 
     public virtual Divisione IdDivisionNavigation { get; set; } = null!;
 
     public virtual Persona IdEncargadoAsociacionNavigation { get; set; } = null!;
+
+    public virtual ICollection<Ruedum> Rueda { get; set; } = new List<Ruedum>();
 }
