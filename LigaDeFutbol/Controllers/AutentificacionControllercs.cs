@@ -6,7 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using LigaDeFutbol.Dtos;
 using Microsoft.Extensions.Configuration; // agregado
-
+using Microsoft.EntityFrameworkCore; // Agrega esta directiva using
 namespace LigaDeFutbol.Controllers
 {
     [Route("api/[controller]")]
@@ -27,7 +27,7 @@ namespace LigaDeFutbol.Controllers
 
         [HttpPost]
         [Route("validar")]
-        public IActionResult Validar([FromBody] AutorizacionDTO request)
+        public async Task<IActionResult> Validar([FromBody] AutorizacionDTO request)
         {
             if (request == null)
                 return BadRequest("Datos inválidos");
@@ -35,7 +35,7 @@ namespace LigaDeFutbol.Controllers
           
 
             
-                var user = _context.Personas.FirstOrDefault(u => u.Dni == request.Dni && u.Contraseña == request.Contrasenia);
+                var user = await _context.Personas.FirstOrDefaultAsync(u => u.Dni == request.Dni && u.Contraseña == request.Contrasenia);
 
                 if (user != null)
                 {
