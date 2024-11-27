@@ -52,6 +52,10 @@ namespace LigaDeFutbol.Controllers
             DateOnly ahora= DateOnly.FromDateTime(DateTime.Now);
             if (ahora<torneo.FechaInicioInscripcion|| ahora>torneo.FechaFinalizacionInscripcion)  
                 return BadRequest("El Torneo especificado no es valido.");
+            var equipoRepetido = await _context.Equipos.FirstOrDefaultAsync(e => (e.Nombre == request.Nombre || e.IdRepresentanteEquipo == request.IdRepresentanteEquipo || e.IdDirectorTecnico  == request.IdDirectorTecnico) && e.IdTorneo == request.IdTorneo);
+            
+            if(equipoRepetido != null)
+                return BadRequest("Ya existe un equipo en el torneo que tenga el mismo nombre o director tecnico o representante y pertenece al torneo.");
             
             // Crear el equipo
             var equipo = new Equipo
@@ -60,7 +64,8 @@ namespace LigaDeFutbol.Controllers
                 IdDirectorTecnico = request.IdDirectorTecnico,
                 IdRepresentanteEquipo = request.IdRepresentanteEquipo,
                 IdDirectorTecnicoNavigation = directorTecnico,
-                IdRepresentanteEquipoNavigation = representanteEquipo
+                IdRepresentanteEquipoNavigation = representanteEquipo,
+                IdTorneo =  request.IdTorneo
             };
 
             await _context.Equipos.AddAsync(equipo);
