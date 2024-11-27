@@ -21,7 +21,7 @@ namespace LigaDeFutbol.Controllers
 
         // Endpoint para registrar un jugador
         [HttpPost()]
-        public async Task<IActionResult> RegistrarJugador([FromBody] RegistroJugadorDTO request)
+        public async Task<IActionResult> RegistrarPersona([FromBody] RegistroJugadorDTO request)
         {
             if (request == null)
                 return BadRequest("Datos inválidos");
