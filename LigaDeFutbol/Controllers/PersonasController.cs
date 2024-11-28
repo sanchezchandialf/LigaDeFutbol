@@ -9,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 namespace LigaDeFutbol.Controllers
 {
     [ApiController]
-    [Authorize]
     [Route("api/[controller]")]
     public class PersonasController : ControllerBase
     {
@@ -22,6 +21,7 @@ namespace LigaDeFutbol.Controllers
 
         // Endpoint para registrar un jugador
         [HttpPost()]
+        
         public async Task<IActionResult> RegistrarPersona([FromBody] RegistrarPersonaDTO request)
         {
             if (request == null)
