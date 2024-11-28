@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using LigaDeFutbol.Dtos;
 using LigaDeFutbol.Models;
-
+using Microsoft.AspNetCore.Authorization;
 namespace LigaDeFutbol.Controllers
 {
     [ApiController]
@@ -19,6 +19,7 @@ namespace LigaDeFutbol.Controllers
 
         // Crear un nuevo torneo
         [HttpPost]
+        [Authorize]
         [Route("crear")]
         public async Task<IActionResult> CrearTorneo([FromBody] CrearTorneoDTO modelo)
         {
