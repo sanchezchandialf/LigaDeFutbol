@@ -52,5 +52,56 @@ namespace LigaDeFutbol.Controllers
 
             return Ok(new { mensaje = "Torneo creado con éxito", torneoId = nuevoTorneo.Id });
         }
+
+        // GET: Obtener todos los torneos
+        [HttpGet]
+        [Route("todos")]
+        public async Task<IActionResult> ObtenerTodosLosTorneos()
+        {
+            var torneos = await _context.Set<Torneo>()
+                .Select(t => new
+                {
+                    t.Id,
+                    t.Nombre,
+                    t.FechaInicio,
+                    t.FechaFinalizacion,
+                    t.FechaInicioInscripcion,
+                    t.FechaFinalizacionInscripcion,
+                    t.IdCategoria,
+                    t.IdDivision,
+                    CategoriaNombre = t.IdCategoriaNavigation.Nombre,
+                    DivisionNombre = t.IdDivisionNavigation.Nombre
+                })
+                .ToListAsync();
+
+            return Ok(torneos);
+        }
+
+        // GET: Obtener torneos con fecha de inscripción activa
+        [HttpGet]
+        [Route("inscripcion-activa")]
+        public async Task<IActionResult> ObtenerTorneosConInscripcionActiva()
+        {
+            DateOnly hoy = DateOnly.FromDateTime(DateTime.Now);
+
+            var torneosActivos = await _context.Set<Torneo>()
+                .Where(t => hoy >= t.FechaInicioInscripcion && hoy <= t.FechaFinalizacionInscripcion)
+                .Select(t => new
+                {
+                    t.Id,
+                    t.Nombre,
+                    t.FechaInicio,
+                    t.FechaFinalizacion,
+                    t.FechaInicioInscripcion,
+                    t.FechaFinalizacionInscripcion,
+                    t.IdCategoria,
+                    t.IdDivision,
+                    CategoriaNombre = t.IdCategoriaNavigation.Nombre,
+                    DivisionNombre = t.IdDivisionNavigation.Nombre
+                })
+                .ToListAsync();
+
+            return Ok(torneosActivos);
+        }
     }
 }

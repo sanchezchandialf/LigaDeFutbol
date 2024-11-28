@@ -66,9 +66,9 @@ namespace LigaDeFutbol.Controllers
 
         // POST: api/Arbitros
         [HttpPost]
-        public async Task<ActionResult<ArbitroDto>> CrearArbitro(ArbitroDto arbitroDto)
+        [Route("crear")]
+        public async Task<ActionResult<ArbitroDto>> CrearArbitro([FromBody] ArbitroDto arbitroDto)
         {
-            // Validar si ya existe un árbitro con el mismo DNI
             if (await _context.Arbitros.AnyAsync(a => a.DniArbitro == arbitroDto.DniArbitro))
             {
                 return BadRequest(new { mensaje = "Ya existe un árbitro con el mismo DNI." });
@@ -92,7 +92,8 @@ namespace LigaDeFutbol.Controllers
 
         // PUT: api/Arbitros/{dni}
         [HttpPut("{dni}")]
-        public async Task<IActionResult> ModificarArbitro(string dni, ArbitroDto arbitroDto)
+        
+        public async Task<IActionResult> ModificarArbitro(string dni, [FromBody] ArbitroDto arbitroDto)
         {
             if (dni != arbitroDto.DniArbitro)
             {
@@ -105,7 +106,6 @@ namespace LigaDeFutbol.Controllers
                 return NotFound(new { mensaje = "Árbitro no encontrado para actualizar." });
             }
 
-            // Actualizar campos
             arbitro.Nombre = arbitroDto.Nombre;
             arbitro.Apellido = arbitroDto.Apellido;
             arbitro.Ciudad = arbitroDto.Ciudad;
