@@ -23,6 +23,7 @@ namespace LigaDeFutbol.Controllers
 
         // Crear un nuevo torneo
         [HttpPost()]
+        [Authorize]
         public async Task<IActionResult> CrearTorneo([FromBody] CrearTorneoDTO modelo)
         {
             if (!ModelState.IsValid)
@@ -58,6 +59,7 @@ namespace LigaDeFutbol.Controllers
 
         // GET: Obtener todos los torneos
         [HttpGet()]
+        [Authorize]
         public async Task<IActionResult> ObtenerTodosLosTorneos()
         {
             var torneos = await _context.Set<Torneo>()
@@ -81,6 +83,7 @@ namespace LigaDeFutbol.Controllers
 
         // GET: Obtener torneos con fecha de inscripción activa
         [HttpGet("inscripcion-activa")]
+        [Authorize]
         public async Task<IActionResult> ObtenerTorneosConInscripcionActiva()
         {
             DateOnly hoy = DateOnly.FromDateTime(DateTime.Now);
