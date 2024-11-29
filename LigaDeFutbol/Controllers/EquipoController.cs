@@ -209,12 +209,13 @@ namespace LigaDeFutbol.Controllers
             });
         }
 
-        [HttpGet(":id")]
+        [HttpGet("{id?}")]
         public async Task<IActionResult> ObtenerEquipos(int? id, [FromBody] ObtenerEquiposDTO request)
         {
             var fechaActual = DateOnly.FromDateTime(DateTime.Now);
             var queryEquipos = _context.Equipos.
                 Where(e => e.IdTorneoNavigation.IdDivision == request.IdDivision && e.IdTorneoNavigation.IdCategoria == request.IdCategoria);
+
 
             if (id != null)
             {
@@ -225,9 +226,67 @@ namespace LigaDeFutbol.Controllers
                 queryEquipos = queryEquipos.Where(e => fechaActual >= e.IdTorneoNavigation.FechaInicioInscripcion && fechaActual <= e.IdTorneoNavigation.FechaFinalizacionInscripcion);
             };
 
-            var equipos = await queryEquipos.ToListAsync();
+            var equipos = await queryEquipos
+                .Include(e => e.IdDirectorTecnicoNavigation)
+                .Include(e => e.IdRepresentanteEquipoNavigation)
+                .Include(e => e.IdTorneoNavigation)
+                .ToListAsync();
 
-            return Ok(new { equipos });
+            var mapeado = equipos.Select(e => new EquipoDTO {
+            Id=e.Id,
+            Nombre=e.Nombre,
+            IdDirectorTecnico=e.IdDirectorTecnico,
+            IdRepresentanteEquipo=e.IdRepresentanteEquipo,
+            IdTorneo=e.IdTorneo,
+            Torneo=new TorneoDTO { Id=e.IdTorneoNavigation.Id, 
+                Nombre=e.IdTorneoNavigation.Nombre,
+                FechaInicio=e.IdTorneoNavigation.FechaInicio, 
+                FechaFinalizacion=e.IdTorneoNavigation.FechaFinalizacion,
+                FechaInicioInscripcion=e.IdTorneoNavigation.FechaInicioInscripcion,
+                FechaFinalizacionInscripcion=e.IdTorneoNavigation.FechaFinalizacionInscripcion},
+            DirectorTecnico=new PersonaDTO
+            {
+                Id = e.IdDirectorTecnicoNavigation.Id,
+                Foto = e.IdDirectorTecnicoNavigation.Foto,
+                Dni = e.IdDirectorTecnicoNavigation.Dni,
+                Nombre = e.IdDirectorTecnicoNavigation.Nombre,
+                Apellido = e.IdDirectorTecnicoNavigation.Apellido,
+                FechaNacimiento = e.IdDirectorTecnicoNavigation.FechaNacimiento,
+                Calle = e.IdDirectorTecnicoNavigation.Calle,
+                Numero = e.IdDirectorTecnicoNavigation.Numero,
+                Ciudad = e.IdDirectorTecnicoNavigation.Ciudad,
+                NTelefono1 = e.IdDirectorTecnicoNavigation.NTelefono1,
+                EsJugador = e.IdDirectorTecnicoNavigation.EsJugador,
+                EsDirectorTecnico = e.IdDirectorTecnicoNavigation.EsDirectorTecnico,
+                EsRepresentanteEquipo = e.IdDirectorTecnicoNavigation.EsRepresentanteEquipo,
+                EsRepresentanteAsociacion = e.IdDirectorTecnicoNavigation.EsEncargadoAsociacion,
+                NSocio = e.IdDirectorTecnicoNavigation.NSocio,
+                IdCategoria = e.IdDirectorTecnicoNavigation.IdCategoria,
+                IdDivision = e.IdDirectorTecnicoNavigation.IdDivision
+            },
+            RepresentanteEquipo=new PersonaDTO
+            {
+                Id = e.IdDirectorTecnicoNavigation.Id,
+                Foto = e.IdRepresentanteEquipoNavigation.Foto,
+                Dni = e.IdRepresentanteEquipoNavigation.Dni,
+                Nombre = e.IdRepresentanteEquipoNavigation.Nombre,
+                Apellido = e.IdRepresentanteEquipoNavigation.Apellido,
+                FechaNacimiento = e.IdRepresentanteEquipoNavigation.FechaNacimiento,
+                Calle = e.IdRepresentanteEquipoNavigation.Calle,
+                Numero = e.IdRepresentanteEquipoNavigation.Numero,
+                Ciudad = e.IdRepresentanteEquipoNavigation.Ciudad,
+                NTelefono1 = e.IdRepresentanteEquipoNavigation.NTelefono1,
+                EsJugador = e.IdRepresentanteEquipoNavigation.EsJugador,
+                EsDirectorTecnico = e.IdRepresentanteEquipoNavigation.EsDirectorTecnico,
+                EsRepresentanteEquipo = e.IdRepresentanteEquipoNavigation.EsRepresentanteEquipo,
+                EsRepresentanteAsociacion = e.IdRepresentanteEquipoNavigation.EsEncargadoAsociacion,
+                NSocio = e.IdRepresentanteEquipoNavigation.NSocio,
+                IdCategoria = e.IdRepresentanteEquipoNavigation.IdCategoria,
+                IdDivision = e.IdRepresentanteEquipoNavigation.IdDivision
+            }
+            });
+
+            return Ok(mapeado);
         }
     }
 }
