@@ -40,7 +40,20 @@ namespace LigaDeFutbol.Controllers
                 if (user != null)
                 {
                     var token = GenerarToken(request.Dni, request.Contrasenia);
-                    return Ok(new { token = token });//return Ok(token);
+                return Ok(new
+                {
+                    token = token,
+                    Id=user.Id,
+                    Nombre=user.Nombre,
+                    Apellido=user.Apellido,
+                    FechaNacimiento=user.FechaNacimiento,
+                    FechaExpiracion = DateTime.UtcNow.AddMinutes(30),
+                    Foto = user.Foto,
+                    EsJugador = user.EsJugador,
+                    EsDirectorTecnico = user.EsDirectorTecnico,
+                    EsRepresentanteEquipo = user.EsRepresentanteEquipo,
+                    EsRepresentanteAsociacion = user.EsEncargadoAsociacion
+                });
                 }
                 else
                 {

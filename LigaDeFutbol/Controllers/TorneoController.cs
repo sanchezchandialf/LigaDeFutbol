@@ -19,7 +19,7 @@ namespace LigaDeFutbol.Controllers
 
         // Crear un nuevo torneo
         [HttpPost]
-        [Route("crear")]
+        [Route("")]
         public async Task<IActionResult> CrearTorneo([FromBody] CrearTorneoDTO modelo)
         {
             if (!ModelState.IsValid)
@@ -55,7 +55,7 @@ namespace LigaDeFutbol.Controllers
 
         // GET: Obtener todos los torneos
         [HttpGet]
-        [Route("todos")]
+        [Route("")]
         public async Task<IActionResult> ObtenerTodosLosTorneos()
         {
             var torneos = await _context.Set<Torneo>()

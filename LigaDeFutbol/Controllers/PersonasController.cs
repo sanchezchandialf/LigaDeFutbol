@@ -83,16 +83,14 @@ namespace LigaDeFutbol.Controllers
             return Ok(new
             {
                 Mensaje = "Jugador registrado exitosamente",
-                //Categoria = persona.NSocio
             });
         }
        
 
         private async Task<int> ObtenerCategoriaPorEdad(RegistrarPersonaDTO request)
         {
-           int edadjugador= CalcularEdad(request , request.FechaNacimiento);
-        
-            var categoria= await _context.Categorias.FirstOrDefaultAsync(c => c.EdadMinima <= edadjugador && c.EdadMaxima >= edadjugador);
+           int edadjugador= CalcularEdad(request.FechaNacimiento);
+            var categoria= await _context.Categorias.FirstOrDefaultAsync(c => edadjugador >= c.EdadMinima && edadjugador <= c.EdadMaxima);
             if (categoria != null)
             {
                 return categoria.Id;
@@ -118,10 +116,10 @@ namespace LigaDeFutbol.Controllers
             }
         }
 
-        private int CalcularEdad( RegistrarPersonaDTO request,DateTime fechaNacimiento)
+        private int CalcularEdad(DateTime fechaNacimiento)
         {
-            int edad = DateTime.Now.Year - request.FechaNacimiento.Year  ;
-            if (DateTime.Now.DayOfYear < request.FechaNacimiento.DayOfYear)
+            int edad = DateTime.Now.Year - fechaNacimiento.Year;
+            if (DateTime.Now.DayOfYear < fechaNacimiento.DayOfYear)
                 edad--;
             return edad;
         }

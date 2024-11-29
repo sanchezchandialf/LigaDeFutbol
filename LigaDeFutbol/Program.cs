@@ -13,7 +13,10 @@ builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnC
 var secret = builder.Configuration["settings:secret"];
 var key = Encoding.ASCII.GetBytes(secret);
 
-
+var CorsPolicy = "allDomains";
+builder.Services.AddCors(options => {
+    options.AddPolicy(name: CorsPolicy, policy => { policy.WithOrigins("*").WithHeaders("*").WithMethods("*"); });
+});
 builder.Services.AddAuthentication(config=>
 {
     config.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -42,7 +45,6 @@ builder.Services.AddDbContext<ContextDb>(options =>
 });
 
 var app = builder.Build();
-app.UseAuthentication();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -51,6 +53,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors(CorsPolicy);
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
