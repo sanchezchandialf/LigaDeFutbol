@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using LigaDeFutbol.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LigaDeFutbol.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class EncuentroController : ControllerBase
     {

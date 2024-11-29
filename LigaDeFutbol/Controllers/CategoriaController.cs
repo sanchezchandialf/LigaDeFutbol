@@ -2,10 +2,12 @@
 using Microsoft.EntityFrameworkCore;
 using LigaDeFutbol.Models;
 using LigaDeFutbol.Models.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LigaDeFutbol.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class CategoriaController : ControllerBase
     {

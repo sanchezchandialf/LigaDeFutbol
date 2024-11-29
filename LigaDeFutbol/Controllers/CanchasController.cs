@@ -2,11 +2,13 @@
 using Microsoft.EntityFrameworkCore;
 using LigaDeFutbol.Models;
 using LigaDeFutbol.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LigaDeFutbol.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CanchasController : ControllerBase
     {
         private readonly ContextDb _context;
@@ -18,6 +20,7 @@ namespace LigaDeFutbol.Controllers
 
         // GET: api/Canchas
         [HttpGet]
+        
         public async Task<ActionResult<IEnumerable<CanchaDto>>> ListarCanchas()
         {
             var canchas = await _context.Canchas
