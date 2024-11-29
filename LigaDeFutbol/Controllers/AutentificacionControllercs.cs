@@ -21,7 +21,7 @@ namespace LigaDeFutbol.Controllers
         public AutentificacionController(IConfiguration config, ContextDb context)
         {
             _config = config; // asignado el valor de config
-            secretKey = _config.GetSection("Settings").GetSection("secret").ToString();
+            secretKey = _config.GetSection("Settings").GetValue<string>("secret");
             _context = context;
         }
 
@@ -47,7 +47,7 @@ namespace LigaDeFutbol.Controllers
                     Nombre=user.Nombre,
                     Apellido=user.Apellido,
                     FechaNacimiento=user.FechaNacimiento,
-                    FechaExpiracion = DateTime.UtcNow.AddMinutes(30),
+                    FechaExpiracion = DateTime.UtcNow.AddMinutes(60),
                     Foto = user.Foto,
                     EsJugador = user.EsJugador,
                     EsDirectorTecnico = user.EsDirectorTecnico,
@@ -73,7 +73,7 @@ namespace LigaDeFutbol.Controllers
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(secretKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var token = new JwtSecurityToken(claims: claims, expires: DateTime.UtcNow.AddMinutes(30), signingCredentials: creds);
+            var token = new JwtSecurityToken(claims: claims, expires: DateTime.UtcNow.AddMinutes(60), signingCredentials: creds);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }

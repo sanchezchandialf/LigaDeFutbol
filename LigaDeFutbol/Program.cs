@@ -11,7 +11,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 var secret = builder.Configuration["settings:secret"];
-var key = Encoding.ASCII.GetBytes(secret);
 
 var CorsPolicy = "allDomains";
 builder.Services.AddCors(options => {
@@ -21,14 +20,16 @@ builder.Services.AddAuthentication(config=>
 {
     config.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     config.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+   
+
 
 }).AddJwtBearer(config => { 
    config.RequireHttpsMetadata = false;
     config.SaveToken = true;
-    config.TokenValidationParameters = new TokenValidationParameters
+    config.TokenValidationParameters = new TokenValidationParameters()
     {
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(key),
+        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(secret)),
         ValidateIssuer = false,
         ValidateAudience = false
     };
