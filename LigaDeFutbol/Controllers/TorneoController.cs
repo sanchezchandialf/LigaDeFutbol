@@ -42,16 +42,26 @@ namespace LigaDeFutbol.Controllers
             var nuevoTorneo = new Torneo
             {
                 Nombre = modelo.Nombre,
-                FechaInicio = modelo.FechaInicio,
-                FechaFinalizacion = modelo.FechaFinalizacion,
-                FechaInicioInscripcion = modelo.FechaInicioInscripcion,
-                FechaFinalizacionInscripcion = modelo.FechaFinalizacionInscripcion,
+                FechaInicio = DateOnly.FromDateTime(modelo.FechaInicio),
+                FechaFinalizacion = DateOnly.FromDateTime(modelo.FechaFinalizacion),
+                FechaInicioInscripcion = DateOnly.FromDateTime(modelo.FechaInicioInscripcion),
+                FechaFinalizacionInscripcion = DateOnly.FromDateTime(modelo.FechaFinalizacionInscripcion),
                 IdEncargadoAsociacion = modelo.IdEncargadoAsociacion,
                 IdCategoria = modelo.IdCategoria,
                 IdDivision = modelo.IdDivision,
             };
 
-            _context.Add(nuevoTorneo);
+            await _context.Torneos.AddAsync(nuevoTorneo);
+            await _context.SaveChangesAsync();
+
+
+            for (int  i = 0; i < modelo.Ruedas; i++)
+            {
+                var rueda = new Ruedum { IdTorneoFk = nuevoTorneo.Id };
+                await _context.Rueda.AddAsync(rueda);
+            }
+
+
             await _context.SaveChangesAsync();
 
             return Ok(new { mensaje = "Torneo creado con éxito", torneoId = nuevoTorneo.Id });
