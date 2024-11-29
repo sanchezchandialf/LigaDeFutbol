@@ -6,7 +6,6 @@ namespace LigaDeFutbol.Dtos
     {
        
         public int IdJugador { get; set; } 
-        public int IdEquipo { get; set; }
 
 
     }

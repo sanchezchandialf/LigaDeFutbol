@@ -90,22 +90,33 @@ namespace LigaDeFutbol.Controllers
 
             var torneosActivos = await _context.Set<Torneo>()
                 .Where(t => hoy >= t.FechaInicioInscripcion && hoy <= t.FechaFinalizacionInscripcion)
-                .Select(t => new
-                {
-                    t.Id,
-                    t.Nombre,
-                    t.FechaInicio,
-                    t.FechaFinalizacion,
-                    t.FechaInicioInscripcion,
-                    t.FechaFinalizacionInscripcion,
-                    t.IdCategoria,
-                    t.IdDivision,
-                    CategoriaNombre = t.IdCategoriaNavigation.Nombre,
-                    DivisionNombre = t.IdDivisionNavigation.Nombre
-                })
+                .Include(e => e.IdCategoriaNavigation)
+                .Include(e => e.IdDivisionNavigation)
                 .ToListAsync();
 
-            return Ok(torneosActivos);
+            var dto = torneosActivos.Select(e => new TorneoDTO
+            {
+                Id = e.Id,
+                Nombre = e.Nombre,
+                FechaInicio = e.FechaInicio,
+                FechaFinalizacion = e.FechaFinalizacion,
+                FechaInicioInscripcion = e.FechaInicioInscripcion,
+                FechaFinalizacionInscripcion = e.FechaFinalizacionInscripcion,
+                IdDivision = e.IdDivision,
+                IdCategoria = e.IdCategoria,
+                Categoria = new Models.DTOs.CategoriaDTO { 
+                Id= e.IdCategoriaNavigation.Id,
+                Nombre = e.IdCategoriaNavigation.Nombre,
+                EdadMaxima = e.IdCategoriaNavigation.EdadMaxima,
+                EdadMinima = e.IdCategoriaNavigation.EdadMinima},
+                Division = new Models.DTOs.DivisionDTO
+                {
+                    Id = e.IdDivisionNavigation.Id,
+                    Nombre = e.IdDivisionNavigation.Nombre
+                }
+            });
+
+            return Ok(dto);
         }
     }
 }

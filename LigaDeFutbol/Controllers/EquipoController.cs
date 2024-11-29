@@ -100,59 +100,42 @@ namespace LigaDeFutbol.Controllers
                 .ToListAsync();
 
             return Ok(directoresTecnicos);
-        }
+        }   
 
         // Endpoint para asignar jugadores a un equipo
         [HttpPost("{equipoId}/asignar-jugadores")]
         [Authorize]
         public async Task<IActionResult> AsignarJugadores(int equipoId,[FromBody] AsignarJugadoresDTO request)
         {
-            
-            
-            
-            
             // Validar jugador
             var jugador = await _context.Personas
               .FirstOrDefaultAsync(p => request.IdJugador == p.Id);
 
-
             if (jugador == null)
                 return BadRequest("El jugador no existe.");
 
-
-
-
-
-
-
-
             // Validar equipo
             var equipo = await _context.Equipos
+                .Include(e => e.IdTorneoNavigation)
                 .FirstOrDefaultAsync(e => e.Id == equipoId);
 
             if (equipo == null)
-                return NotFound("Equipo no encontrado."); 
+                return NotFound("Equipo no encontrado.");
 
-          
-           
-          
-            var torneo= await _context.Torneos.FirstOrDefaultAsync(t=>t.Id==equipo.IdTorneo);
-            if (torneo == null)
-                return BadRequest("El Torneo especificado no es valido.");
+            var torneo = equipo.IdTorneoNavigation;
         
 
             //validar que un jugador solo pueda estar en un equipo en un torneo
-            var equiposEnTorneo = await _context.Equipos.Where(e => e.IdTorneo == torneo.Id).ToListAsync(); //equipos en torneo=
+            var equiposEnTorneo = await _context.Equipos.Where(e => e.IdTorneo == torneo.Id).ToListAsync();
+            var idEquipos = equiposEnTorneo.Select(e => e.Id).ToList();
+
+            var inscripcionesAEquipos = await _context.JugadorEquipos.Where(e => idEquipos.Contains(e.IdEquipo)).ToListAsync();
             
-            foreach (var equipoEnTorneo in equiposEnTorneo)
+            foreach (var inscripcionAEquipo in inscripcionesAEquipos)
             {
-                foreach (var jugadorEquipo in equipoEnTorneo.JugadorEquipos)
-                {
-                    if (request.IdJugador==jugadorEquipo.IdJugador)
-                    {
-                        return BadRequest("El jugador ya esta anotado en otro equipo en un torneo");
-                    }
-                }
+                if (inscripcionAEquipo.IdJugador == request.IdJugador)
+                    return BadRequest("El jugador ya esta anotado en otro equipo en el torneo especificado");
+
             }
 
             if (torneo.IdDivision!=jugador.IdDivision) 
@@ -166,12 +149,12 @@ namespace LigaDeFutbol.Controllers
             var jugadorequipo = new JugadorEquipo
             {
                 IdJugador = request.IdJugador,
-                IdEquipo = request.IdEquipo,
+                IdEquipo = equipoId,
                 Aprobado = true
-
             };
-          
+
             // Guardar cambios
+            await _context.JugadorEquipos.AddAsync(jugadorequipo);
             await _context.SaveChangesAsync();
 
           return Ok(new
@@ -179,8 +162,6 @@ namespace LigaDeFutbol.Controllers
               Mensaje = "Jugador asignado exitosamente al equipo"
           });
         }
-
-
 
         // Endpoint para listar jugadores de un equipo
         [HttpGet("{equipoId}/jugadores")]
