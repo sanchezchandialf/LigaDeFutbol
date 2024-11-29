@@ -59,7 +59,7 @@ namespace LigaDeFutbol.Controllers
                         EsJugador = user.EsJugador,
                         EsDirectorTecnico = user.EsDirectorTecnico,
                         EsRepresentanteEquipo = user.EsRepresentanteEquipo,
-                        EsRepresentanteAsociacion = user.EsEncargadoAsociacion,
+                        EsEncargadoAsociacion = user.EsEncargadoAsociacion,
                         nSocio = user.NSocio,
                         IdCategoria = user.IdCategoria,
                         IdDivision = user.IdDivision
