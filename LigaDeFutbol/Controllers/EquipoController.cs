@@ -24,6 +24,8 @@ namespace LigaDeFutbol.Controllers
             _context = context;
         }
 
+
+
         // Endpoint para registrar un equipo (ya definido antes)
         [HttpPost()]
         public async Task<IActionResult> RegistrarEquipo([FromBody] RegistrarEquipoDTO request)
@@ -205,6 +207,27 @@ namespace LigaDeFutbol.Controllers
                 NombreEquipo = equipo.Nombre,
                 Jugadores = jugadores
             });
+        }
+
+        [HttpGet(":id")]
+        public async Task<IActionResult> ObtenerEquipos(int? id, [FromBody] ObtenerEquiposDTO request)
+        {
+            var fechaActual = DateOnly.FromDateTime(DateTime.Now);
+            var queryEquipos = _context.Equipos.
+                Where(e => e.IdTorneoNavigation.IdDivision == request.IdDivision && e.IdTorneoNavigation.IdCategoria == request.IdCategoria);
+
+            if (id != null)
+            {
+                queryEquipos = queryEquipos.Where(e => e.Id == id);
+            };
+            if (request.ListarSoloDisponibles == true)
+            {
+                queryEquipos = queryEquipos.Where(e => fechaActual >= e.IdTorneoNavigation.FechaInicioInscripcion && fechaActual <= e.IdTorneoNavigation.FechaFinalizacionInscripcion);
+            };
+
+            var equipos = await queryEquipos.ToListAsync();
+
+            return Ok(new { equipos });
         }
     }
 }

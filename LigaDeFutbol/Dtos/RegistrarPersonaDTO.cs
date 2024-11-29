@@ -2,7 +2,7 @@
 {
     public class RegistrarPersonaDTO
     {
-        public string Foto { get; set; } = null!;
+        public string? Foto { get; set; } = null!;
         public string Dni { get; set; } = null!;
         public string Nombre { get; set; } = null!;
         public string Apellido { get; set; } = null!;

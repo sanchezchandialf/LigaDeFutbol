@@ -43,16 +43,28 @@ namespace LigaDeFutbol.Controllers
                 return Ok(new
                 {
                     token = token,
-                    Id=user.Id,
-                    Nombre=user.Nombre,
-                    Apellido=user.Apellido,
-                    FechaNacimiento=user.FechaNacimiento,
                     FechaExpiracion = DateTime.UtcNow.AddMinutes(60),
-                    Foto = user.Foto,
-                    EsJugador = user.EsJugador,
-                    EsDirectorTecnico = user.EsDirectorTecnico,
-                    EsRepresentanteEquipo = user.EsRepresentanteEquipo,
-                    EsRepresentanteAsociacion = user.EsEncargadoAsociacion
+                    usuario = new
+                    {
+                        Id = user.Id,
+                        Foto = user.Foto,
+                        Dni = user.Dni,
+                        Nombre = user.Nombre,
+                        Apellido = user.Apellido,
+                        FechaNacimiento = user.FechaNacimiento,
+                        Calle = user.Calle,
+                        numero = user.Numero,
+                        ciudad = user.Ciudad,
+                        nTelefono1 = user.NTelefono1,
+                        EsJugador = user.EsJugador,
+                        EsDirectorTecnico = user.EsDirectorTecnico,
+                        EsRepresentanteEquipo = user.EsRepresentanteEquipo,
+                        EsRepresentanteAsociacion = user.EsEncargadoAsociacion,
+                        nSocio = user.NSocio,
+                        IdCategoria = user.IdCategoria,
+                        IdDivision = user.IdDivision
+                    }
+
                 });
                 }
                 else
