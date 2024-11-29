@@ -1,8 +1,12 @@
-﻿using LigaDeFutbol.Models;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using LigaDeFutbol.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using LigaDeFutbol.Dtos;
-using LigaDeFutbol.Models;
+
 
 namespace LigaDeFutbol.Controllers
 {
@@ -10,16 +14,15 @@ namespace LigaDeFutbol.Controllers
     [Route("api/[controller]")]
     public class TorneosController : ControllerBase
     {
-        private readonly DbContext _context;
+        private readonly ContextDb _context;
 
-        public TorneosController(DbContext context)
+        public TorneosController(ContextDb context)
         {
             _context = context;
         }
 
         // Crear un nuevo torneo
-        [HttpPost]
-        [Route("")]
+        [HttpPost()]
         public async Task<IActionResult> CrearTorneo([FromBody] CrearTorneoDTO modelo)
         {
             if (!ModelState.IsValid)
@@ -54,8 +57,7 @@ namespace LigaDeFutbol.Controllers
         }
 
         // GET: Obtener todos los torneos
-        [HttpGet]
-        [Route("")]
+        [HttpGet()]
         public async Task<IActionResult> ObtenerTodosLosTorneos()
         {
             var torneos = await _context.Set<Torneo>()
@@ -78,8 +80,7 @@ namespace LigaDeFutbol.Controllers
         }
 
         // GET: Obtener torneos con fecha de inscripción activa
-        [HttpGet]
-        [Route("inscripcion-activa")]
+        [HttpGet("inscripcion-activa")]
         public async Task<IActionResult> ObtenerTorneosConInscripcionActiva()
         {
             DateOnly hoy = DateOnly.FromDateTime(DateTime.Now);
