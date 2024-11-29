@@ -210,18 +210,18 @@ namespace LigaDeFutbol.Controllers
         }
 
         [HttpGet("{id?}")]
-        public async Task<IActionResult> ObtenerEquipos(int? id, [FromBody] ObtenerEquiposDTO request)
+        public async Task<IActionResult> ObtenerEquipos(int? id, [FromQuery] ObtenerEquiposDTO request)
         {
             var fechaActual = DateOnly.FromDateTime(DateTime.Now);
             var queryEquipos = _context.Equipos.
-                Where(e => e.IdTorneoNavigation.IdDivision == request.IdDivision && e.IdTorneoNavigation.IdCategoria == request.IdCategoria);
+                Where(e => e.IdTorneoNavigation.IdDivision == request.idDivision && e.IdTorneoNavigation.IdCategoria == request.idCategoria);
 
 
             if (id != null)
             {
                 queryEquipos = queryEquipos.Where(e => e.Id == id);
             };
-            if (request.ListarSoloDisponibles == true)
+            if (request.listarSoloDisponibles == true)
             {
                 queryEquipos = queryEquipos.Where(e => fechaActual >= e.IdTorneoNavigation.FechaInicioInscripcion && fechaActual <= e.IdTorneoNavigation.FechaFinalizacionInscripcion);
             };
@@ -243,7 +243,9 @@ namespace LigaDeFutbol.Controllers
                 FechaInicio=e.IdTorneoNavigation.FechaInicio, 
                 FechaFinalizacion=e.IdTorneoNavigation.FechaFinalizacion,
                 FechaInicioInscripcion=e.IdTorneoNavigation.FechaInicioInscripcion,
-                FechaFinalizacionInscripcion=e.IdTorneoNavigation.FechaFinalizacionInscripcion},
+                FechaFinalizacionInscripcion=e.IdTorneoNavigation.FechaFinalizacionInscripcion,
+                IdDivision=e.IdTorneoNavigation.IdDivision,
+                IdCategoria=e.IdTorneoNavigation.IdCategoria},
             DirectorTecnico=new PersonaDTO
             {
                 Id = e.IdDirectorTecnicoNavigation.Id,

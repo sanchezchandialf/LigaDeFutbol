@@ -11,6 +11,9 @@ namespace LigaDeFutbol.Dtos
 
         public DateOnly FechaInicioInscripcion { get; set; }
         public DateOnly FechaFinalizacionInscripcion { get; set; }
+
+        public int IdDivision { get; set; }
+        public int IdCategoria { get; set; }
         public DivisionDTO? Division { get; set; }
         public CategoriaDTO? Categoria { get; set; }
     }

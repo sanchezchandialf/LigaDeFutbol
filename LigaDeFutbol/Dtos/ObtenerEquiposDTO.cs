@@ -2,10 +2,10 @@
 {
     public class ObtenerEquiposDTO
     {
-        public bool? ListarSoloDisponibles { get; set; }
+        public bool? listarSoloDisponibles { get; set; }
 
-        public int IdCategoria { get; set; }
+        public int idCategoria { get; set; }
 
-        public int IdDivision { get; set; }
+        public int idDivision { get; set; }
     }
 }
